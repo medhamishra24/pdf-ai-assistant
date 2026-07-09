@@ -1,0 +1,8 @@
+venv/
+.env
+__pycache__/
+uploads/
+vectorstore/
+chat_history.db
+*.db
+*.pyc

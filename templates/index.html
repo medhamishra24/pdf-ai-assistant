@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PDF AI Assistant</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<script>
+if(!localStorage.getItem("token")){
+    window.location="/login-page";
+}
+</script>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🤖
+            </div>
+
+            <div class="logo-copy">
+                <h2>PDF AI</h2>
+                <span>Assistant</span>
+            </div>
+
+        </div>
+
+
+        <!-- Upload Card -->
+
+        <div class="upload-card">
+
+            <label id="uploadBtn" for="pdfFile" class="upload-btn">
+
+                <div class="upload-content">
+
+                    <div class="upload-icon">
+                        ⬆
+                    </div>
+
+                    <div class="upload-title">
+                        Upload PDF
+                    </div>
+
+                    <div class="upload-subtitle">
+                        Drag & Drop or Browse Files
+                    </div>
+
+                </div>
+
+            </label>
+
+            <input
+                type="file"
+                id="pdfFile"
+                hidden
+                accept=".pdf"
+            >
+
+            <div class="upload-footnote">
+                Securely index your documents in seconds.
+            </div>
+
+        </div>
+
+
+        <!-- Uploaded Docs -->
+
+        <div class="documents">
+
+            <div class="documents-header">
+
+                <h3>Your Documents</h3>
+
+                <span>Ready</span>
+
+            </div>
+
+            <div id="pdfList">
+
+                <div class="empty-doc">
+
+                    No PDF Uploaded Yet
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Dropdown -->
+
+        <div class="doc-selector">
+
+            <label>Chat with</label>
+
+            <select id="docSelect">
+
+                <option value="">
+                    All Documents
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- New Chat -->
+
+        <button id="newChat" class="new-chat">
+
+            ✨ New Chat
+
+        </button>
+
+
+        <!-- History -->
+
+        <div class="history">
+
+            <div class="history-header">
+
+                <h3>Recent Chats</h3>
+
+            </div>
+
+            <div id="historyList" class="history-list">
+
+                <div class="history-empty">
+
+                    Loading...
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile -->
+
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+
+                M
+
+            </div>
+
+            <div class="profile-info">
+                <h4 id="userName">Guest</h4>
+                <p id="userEmail">Please Login</p>
+            </div>
+
+            <button id="sidebarLogoutBtn" class="profile-pill">
+                ⎋
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+
+        <!-- Top -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+
+                    Chat with your documents
+
+                </h1>
+
+                <p>
+
+                    Upload PDFs and ask anything in natural language.
+
+                </p>
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <button id="themeBtn" class="icon-btn">
+
+                    🌙
+
+                </button>
+
+                <button id="clearChat" class="clear-btn">
+
+                    Clear Chat
+
+                </button>
+
+                <button id="logoutBtn" class="clear-btn">
+
+                    🚪 Logout
+                    
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Chat -->
+
+        <section class="chat-section">
+
+            <div id="chatBox" class="chat-box">
+
+                <div class="message ai welcome">
+
+                    <div class="avatar">
+
+                        🤖
+
+                    </div>
+
+                    <div class="bubble-wrap">
+
+                        <div class="bubble">
+
+                            <h3>Hello, there 👋</h3>
+
+                            <p>
+
+                                Upload a PDF and I'll help you summarize,
+
+                                explain,
+
+                                or answer questions about it.
+
+                            </p>
+
+                            <p>
+
+                                I can work across multiple PDFs and remember
+
+                                recent conversations.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Typing -->
+
+            <div id="typing" class="typing" style="display:none;">
+
+                <div class="avatar">
+
+                    🤖
+
+                </div>
+
+                <div class="typing-bubble">
+
+                    <span></span>
+
+                    <span></span>
+
+                    <span></span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Suggestions -->
+
+            <div class="quick-questions">
+
+                <button class="quick-btn"
+                    data-question="Summarize the uploaded PDF">
+
+                    Summary
+
+                </button>
+
+                <button class="quick-btn"
+                    data-question="Tell me about my education">
+
+                    Education
+
+                </button>
+
+                <button class="quick-btn"
+                    data-question="Tell me about my projects">
+
+                    Projects
+
+                </button>
+
+                <button class="quick-btn"
+                    data-question="What are my technical skills?">
+
+                    Skills
+
+                </button>
+
+                <button class="quick-btn"
+                    data-question="Tell me about my experience">
+
+                    Experience
+
+                </button>
+
+            </div>
+
+
+            <!-- Input -->
+
+            <div class="input-wrapper">
+
+                <button id="attachBtn" class="attach-btn">
+
+                    📎
+
+                </button>
+
+                <textarea
+                    id="question"
+                    rows="1"
+                    placeholder="Ask anything about your documents..."
+                ></textarea>
+
+                <button id="send" class="send-btn">
+
+                    ➜
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/static/js/script.js"></script>
+
+</body>
+
+</html>
