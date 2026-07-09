@@ -29,6 +29,7 @@ const themeBtn = document.getElementById("themeBtn");
 const quickButtons = document.querySelectorAll(".quick-btn");
 const docSelect = document.getElementById("docSelect");
 const attachBtn = document.getElementById("attachBtn");
+const toast = document.getElementById("toast");
 
 function getAuthHeaders() {
     const token = localStorage.getItem("token");
@@ -62,6 +63,26 @@ function escapeHtml(text){
     const div=document.createElement("div");
     div.innerText=text;
     return div.innerHTML;
+}
+
+// ====================================
+// TOAST NOTIFICATION
+// ====================================
+
+function showToast(message, type = "success") {
+
+    console.log("Toast:", message);
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.className = "toast";
+    toast.classList.add("toast-" + type);
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
 }
 
 // ====================================
@@ -163,13 +184,15 @@ function addBotMessage(message){
 
             <div class="bubble">
 
-                ${escapeHtml(message)}
+                <span class="typing-text"></span>
 
             </div>
 
             <div class="bubble-meta">
 
                 ${formatTime()}
+
+                <button class="copy-btn">📋</button>
 
             </div>
 
@@ -179,6 +202,28 @@ function addBotMessage(message){
 
     `;
 
+    const typingText = chatBox.lastElementChild.querySelector(".typing-text");
+
+let i = 0;
+
+const interval = setInterval(() => {
+    typingText.textContent += message.charAt(i);
+    i++;
+    scrollBottom();
+
+    if (i >= message.length) {
+        clearInterval(interval);
+    }
+}, 15);
+    const copyBtn = chatBox.lastElementChild.querySelector(".copy-btn");
+
+    copyBtn.addEventListener("click", async () => {
+
+    await navigator.clipboard.writeText(message);
+
+    showToast("Response copied!", "success");
+
+});
     scrollBottom();
 
 }
@@ -344,7 +389,8 @@ async function uploadPDF(){
 
         uploadedPDF=data.filename;
 
-        addBotMessage("✅ PDF uploaded successfully.");
+        showToast("✅ PDF uploaded successfully!", "success");
+        addBotMessage("✅ PDF uploaded successfully.");;
 
         await loadDocuments();
 
@@ -354,6 +400,7 @@ async function uploadPDF(){
 
     catch(error){
 
+        showToast("❌ Upload failed!", "error");
         addBotMessage("❌ Upload failed.");
 
     }
@@ -424,6 +471,10 @@ async function askAI(questionFromButton=null){
 
     typing.style.display="flex";
 
+    sendBtn.disabled = true;
+    console.log("Loading started")
+    sendBtn.innerHTML = "⏳";
+
     scrollBottom();
 
     try{
@@ -446,6 +497,10 @@ async function askAI(questionFromButton=null){
 
         typing.style.display="none";
 
+        sendBtn.disabled = false;
+        console.log("Loading finished");
+        sendBtn.innerHTML = "➜";
+
         addBotMessage(data.answer);
 
         await loadHistory();
@@ -456,8 +511,12 @@ async function askAI(questionFromButton=null){
 
         typing.style.display="none";
 
+        sendBtn.disabled = false;
+        console.log("Loading finished");
+        sendBtn.innerHTML = "➜";
+        
+        showToast("Something went wrong!", "error");
         addBotMessage("Something went wrong.");
-
     }
 
 }
@@ -626,12 +685,14 @@ docSelect.addEventListener("change",()=>{
 clearChatBtn.onclick=()=>{
 
     ensureWelcomeMessage();
+    showToast("Chat cleared", "info");
 
 };
 
 newChatBtn.onclick=()=>{
 
     ensureWelcomeMessage();
+    showToast("New chat started", "info");
 
 };
 
@@ -736,4 +797,26 @@ function handleAuthError(response) {
         return true;
     }
     return false;
+}
+
+// ===========================
+// MOBILE SIDEBAR
+// ===========================
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.querySelector(".sidebar");
+const overlay = document.getElementById("overlay");
+
+if(menuBtn){
+
+    menuBtn.onclick = () => {
+        sidebar.classList.toggle("show");
+        overlay.classList.toggle("show");
+    };
+
+    overlay.onclick = () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+    };
+
 }
