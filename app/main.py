@@ -48,15 +48,15 @@ uploaded_files = []
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse(
-        "login.html",
-        {"request": request}
+        request,
+        "login.html"
     )
     
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request}
+        request,
+        "index.html"
     )
 
 # -----------------------------
@@ -225,14 +225,14 @@ async def login(data: dict = Body(...)):
 @app.get("/login-page", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse(
-        "login.html",
-        {"request": request}
+        request,
+        "login.html"
     )
 
 
 @app.get("/signup-page", response_class=HTMLResponse)
 async def signup_page(request: Request):
     return templates.TemplateResponse(
-        "signup.html",
-        {"request": request}
+        request,
+        "signup.html"
     )
