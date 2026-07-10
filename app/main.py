@@ -17,6 +17,7 @@ from app.database import (
 )
 from app.auth import create_access_token, verify_password, get_current_user
 from fastapi.responses import HTMLResponse
+from google import genai
 
 
 app = FastAPI(title="PDF AI Assistant")
@@ -236,3 +237,9 @@ async def signup_page(request: Request):
         request,
         "signup.html"
     )
+    
+    @app.get("/debug-models")
+async def debug_models():
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+    models = client.models.list()
+    return {"models": [m.name for m in models if "embed" in m.name.lower()]}
