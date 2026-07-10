@@ -9,7 +9,7 @@ class PDFRAG:
 
     def __init__(self):
         self.embedding_model = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-001",
+            model="models/text-embedding-004",
             google_api_key=os.getenv("GEMINI_API_KEY")
 )
         self.vector_db = None
