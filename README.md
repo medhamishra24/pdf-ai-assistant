@@ -1,5 +1,8 @@
 # RAG Document QA
 
+## Live Demo
+🔗 [https://pdf-ai-assistant-hnx6.onrender.com](https://pdf-ai-assistant-hnx6.onrender.com)
+
 ## Project Overview
 This project is a production-ready foundation for a PDF-based RAG chatbot built with FastAPI. The current Phase 1 setup provides a clean modular structure for future API development, document ingestion, and retrieval workflows.
 
