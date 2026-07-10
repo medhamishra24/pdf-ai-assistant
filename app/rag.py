@@ -1,17 +1,34 @@
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import os
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain_core.embeddings import Embeddings
+import os
+from google import genai
+
+
+class GeminiEmbeddings(Embeddings):
+    def __init__(self):
+        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+    def embed_documents(self, texts):
+        result = self.client.models.embed_content(
+            model="text-embedding-004",
+            contents=texts
+        )
+        return [e.values for e in result.embeddings]
+
+    def embed_query(self, text):
+        result = self.client.models.embed_content(
+            model="text-embedding-004",
+            contents=[text]
+        )
+        return result.embeddings[0].values
 
 
 class PDFRAG:
 
     def __init__(self):
-        self.embedding_model = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
-            google_api_key=os.getenv("GEMINI_API_KEY")
-)
+        self.embedding_model = GeminiEmbeddings()
         self.vector_db = None
 
     def read_pdf(self, file_path: str) -> str:
