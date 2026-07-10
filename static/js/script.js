@@ -602,7 +602,9 @@ async function loadHistory(){
 
     try{
 
-        const response=await fetch("/history");
+        const response=await fetch("/history", {
+            headers: getAuthHeaders()
+        });
 
         const data=await response.json();
 
