@@ -238,7 +238,7 @@ async def signup_page(request: Request):
         "signup.html"
     )
     
-    @app.get("/debug-models")
+@app.get("/debug-models")
 async def debug_models():
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     models = client.models.list()
